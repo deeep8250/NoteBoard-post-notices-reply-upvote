@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine as builder
+FROM golang:1.25-alpine AS builder
 
 
 WORKDIR /app
@@ -14,6 +14,7 @@ FROM alpine:latest
 
 WORKDIR /app
 COPY --from=builder /app/threadpulse .
+COPY --from=builder /app/migrations ./migrations
 
 EXPOSE 8080
 CMD [ "./threadpulse" ]

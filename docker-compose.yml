@@ -11,11 +11,11 @@ services:
  db:
   image: postgres:15-alpine
   ports: 
-   - "5433:5432"
+   - "5433:${DB_PORT}"
   environment:
-   POSTGRES_USER: threadpulse
-   POSTGRES_PASSWORD: threadpulse1234
-   POSTGRES_DB: threadpulse_db
+   POSTGRES_USER: ${DB_USER}
+   POSTGRES_PASSWORD: ${DB_PASSWORD}
+   POSTGRES_DB: ${DB_NAME}
   volumes:
     - postgres_data:/var/lib/postgresql/data 
 
