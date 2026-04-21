@@ -1,0 +1,23 @@
+services:
+ app:
+  build: .
+  ports:
+   - "8000:8080"
+  env_file:
+   - .env
+  depends_on:
+   - db
+
+ db:
+  image: postgres:15-alpine
+  ports: 
+   - "5433:5432"
+  environment:
+   POSTGRES_USER: threadpulse
+   POSTGRES_PASSWORD: threadpulse1234
+   POSTGRES_DB: threadpulse_db
+  volumes:
+    - postgres_data:/var/lib/postgresql/data 
+
+volumes:
+     postgres_data:         
