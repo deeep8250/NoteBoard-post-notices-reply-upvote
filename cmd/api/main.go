@@ -5,10 +5,17 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
+
+	handler "github.com/threadpulse/internal/auth/handlers"
+	"github.com/threadpulse/internal/auth/repository"
+	service "github.com/threadpulse/internal/auth/services"
+
+	"github.com/threadpulse/internal/routes"
 )
 
 func main() {
@@ -39,5 +46,14 @@ func main() {
 	}
 
 	fmt.Println("database connect successfully")
+
+	AuthRepo := repository.NewAuthRepo(db)
+	AuthService := service.NewAuthService(AuthRepo)
+	AuthHandler := handler.NewAuthService(AuthService)
+
+	r := gin.Default()
+	routes.Routes(r, AuthHandler)
+
+	r.Run(":8080")
 
 }
