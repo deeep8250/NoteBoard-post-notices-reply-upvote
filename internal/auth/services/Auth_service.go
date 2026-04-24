@@ -5,7 +5,8 @@ import (
 	"errors"
 
 	"github.com/threadpulse/internal/auth/repository"
-	"github.com/threadpulse/internal/models"
+	"github.com/threadpulse/models"
+
 	"golang.org/x/crypto/bcrypt"
 )
 

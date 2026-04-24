@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/threadpulse/internal/models"
+	"github.com/threadpulse/models"
 )
 
 type AuthRepo struct {

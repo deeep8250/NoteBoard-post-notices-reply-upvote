@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	service "github.com/threadpulse/internal/auth/services"
-	"github.com/threadpulse/internal/models"
+	"github.com/threadpulse/models"
 )
 
 type AuthService struct {
