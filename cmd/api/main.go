@@ -49,7 +49,7 @@ func main() {
 
 	AuthRepo := repository.NewAuthRepo(db)
 	AuthService := service.NewAuthService(AuthRepo)
-	AuthHandler := handler.NewAuthService(AuthService)
+	AuthHandler := handler.NewAuthHandler(AuthService)
 
 	r := gin.Default()
 	routes.Routes(r, AuthHandler)
