@@ -50,14 +50,15 @@ func (h *AuthService) Login(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Login(UserLoginInput)
+	token, err := h.services.Login(UserLoginInput)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "login-successfull"})
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
 
 }

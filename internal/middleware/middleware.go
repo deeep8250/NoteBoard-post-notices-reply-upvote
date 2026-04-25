@@ -31,7 +31,7 @@ func Miiddleware() gin.HandlerFunc {
 			return
 		}
 
-		tokenstring := parts[0]
+		tokenstring := parts[1]
 
 		token, err := jwt.Parse(tokenstring, func(t *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil

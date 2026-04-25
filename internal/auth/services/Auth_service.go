@@ -7,6 +7,7 @@ import (
 	"github.com/threadpulse/internal/auth/repository"
 	"github.com/threadpulse/models"
 
+	jwt "github.com/threadpulse/internal/JTW"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -47,16 +48,22 @@ func (s *AuthService) Register(registerInput models.Register) error {
 	return nil
 }
 
-func (s *AuthService) Login(user models.Login) error {
+func (s *AuthService) Login(user models.Login) (string, error) {
 	ReturnedUser, err := s.AuthRepo.VerifyByEmail(user.Email)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(ReturnedUser.HashPassword), []byte(user.Password))
 	if err != nil {
-		return errors.New("invalid user")
+		return "", errors.New("invalid user")
 	}
-	return nil
+
+	token, err := jwt.JWTinit(ReturnedUser.Id)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 
 }

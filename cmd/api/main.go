@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
@@ -35,10 +36,17 @@ func main() {
 
 	var db *sqlx.DB
 
-	// for range 5 {
-	// 	db, err = sqlx.Connect("postgres", dsn)
-	// }
-	db, err = sqlx.Connect("postgres", dsn)
+	for range 5 {
+		db, err = sqlx.Connect("postgres", dsn)
+		if err == nil {
+			break
+		}
+		time.Sleep(2 * time.Second)
+	}
+	if err != nil {
+		log.Fatal("error while connecting to db : ", err.Error())
+	}
+
 	err = db.Ping()
 	if err != nil {
 		log.Fatal("database connection failed")
