@@ -20,3 +20,16 @@ type User struct {
 	HashPassword string    `json:"-" db:"hashed_pass"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 }
+
+type CreateThread struct {
+	Id        int       `json:"id" db:"id"`
+	UserID    int       `json:"user_id" db:"user_id"`
+	Title     string    `json:"title" db:"title" binding:"required"`
+	Content   string    `json:"content" db:"content" binding:"required"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+}
+
+type UpdateThread struct {
+	Title   string `json:"title" db:"title" `
+	Content string `json:"content" db:"content" `
+}
