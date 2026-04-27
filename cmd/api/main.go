@@ -59,8 +59,13 @@ func main() {
 	AuthService := service.NewAuthService(AuthRepo)
 	AuthHandler := handler.NewAuthHandler(AuthService)
 
+	//threads
+	ThreadRepo := repository.NewThreadRepo(db)
+	ThreadService := service.NewThreadsService(ThreadRepo)
+	ThreadHandler := handler.NewThreadHandler(ThreadService)
+
 	r := gin.Default()
-	routes.Routes(r, AuthHandler)
+	routes.Routes(r, AuthHandler, ThreadHandler)
 
 	r.Run(":8080")
 
