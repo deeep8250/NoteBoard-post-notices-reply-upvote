@@ -8,15 +8,15 @@ import (
 	"github.com/threadpulse/models"
 )
 
-type AuthService struct {
+type AuthHandler struct {
 	services service.ServiceStructInterFace
 }
 
-func NewAuthHandler(serv service.ServiceStructInterFace) *AuthService {
-	return &AuthService{services: serv}
+func NewAuthHandler(serv service.ServiceStructInterFace) *AuthHandler {
+	return &AuthHandler{services: serv}
 }
 
-func (h *AuthService) RegisterHandler(c *gin.Context) {
+func (h *AuthHandler) RegisterHandler(c *gin.Context) {
 	var UserRegisterInput models.Register
 	err := c.ShouldBind(&UserRegisterInput)
 	if err != nil {
@@ -38,7 +38,7 @@ func (h *AuthService) RegisterHandler(c *gin.Context) {
 		"response": "user created",
 	})
 }
-func (h *AuthService) Login(c *gin.Context) {
+func (h *AuthHandler) Login(c *gin.Context) {
 
 	var UserLoginInput models.Login
 

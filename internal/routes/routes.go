@@ -8,7 +8,7 @@ import (
 	"github.com/threadpulse/internal/middleware"
 )
 
-func Routes(r *gin.Engine, auth *handler.AuthService) {
+func Routes(r *gin.Engine, auth *handler.AuthHandler) {
 
 	authHandler := r.Group("/auth")
 	{
