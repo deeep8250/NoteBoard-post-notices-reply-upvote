@@ -70,7 +70,7 @@ func (r *ThreadsRepo) GetThreadByID(threadId int) (*models.CreateThread, error) 
 
 func (r *ThreadsRepo) UpdateThread(ThreadId, userID int, input models.UpdateThread) error {
 	sql := `update posts set title=$1 , content=$2 where id=$3 and user_id=$4`
-	status, err := r.Db.Exec(sql, input.Title, input.Content, ThreadId)
+	status, err := r.Db.Exec(sql, input.Title, input.Content, ThreadId, userID)
 	if err != nil {
 		return err
 	}
