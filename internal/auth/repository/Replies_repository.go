@@ -17,9 +17,9 @@ func NewRepliesRepo(db *sqlx.DB) *RepliesRepo {
 	}
 }
 
-func (r *RepliesRepo) CreateRepliesRepo(postID, userID int, reply string) error {
+func (r *RepliesRepo) CreateRepliesRepo(reply models.Replies) error {
 	query := `insert into replies(post_id,replied_user_id,reply) values($1,$2,$3)`
-	status, err := r.Db.Exec(query, postID, userID, reply)
+	status, err := r.Db.Exec(query, reply.PostID, reply.UserID, reply.Reply)
 	if err != nil {
 		return err
 	}
@@ -48,9 +48,9 @@ func (r *RepliesRepo) GetAllReplies(postID, limit, offset int) ([]models.Replies
 	return replies, count, nil
 }
 
-func (r *RepliesRepo) UpdateReply(replyID, userID int, UpdatedReply string) error {
+func (r *RepliesRepo) UpdateReply(UpdatedReply models.Replies) error {
 	query := `update replies set reply=$1 where id=$2 and replied_user_id=$3`
-	status, err := r.Db.Exec(query, UpdatedReply, replyID, userID)
+	status, err := r.Db.Exec(query, UpdatedReply.Reply, UpdatedReply.Id, UpdatedReply.UserID)
 	if err != nil {
 		return err
 	}
