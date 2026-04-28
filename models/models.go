@@ -33,3 +33,11 @@ type UpdateThread struct {
 	Title   string `json:"title" db:"title" `
 	Content string `json:"content" db:"content" `
 }
+
+type Replies struct {
+	Id        int       `json:"id" db:"id"`
+	PostID    int       `json:"post_id" db:"post_id"`
+	UserID    int       `json:"user_id" db:"replied_user_id"`
+	Reply     int       `json:"reply" db:"reply"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+}
