@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/threadpulse/internal/auth/repository"
 	"github.com/threadpulse/models"
 )
@@ -17,8 +15,8 @@ func NewRepliesService(serv *repository.RepliesRepo) *RepliesService {
 	}
 }
 
-func (s *RepliesService) CreateRepliesService(postID, userID int, reply string) error {
-	err := s.service.CreateRepliesRepo(postID, userID, reply)
+func (s *RepliesService) CreateRepliesService(reply models.Replies) error {
+	err := s.service.CreateRepliesRepo(reply)
 	if err != nil {
 		return err
 	}
@@ -34,11 +32,9 @@ func (s *RepliesService) GetAllRepliessService(postID int, limit, page int) ([]m
 	return replies, count, nil
 }
 
-func (s *RepliesService) UpdateReplyService(postID, userID int, UpdatedReply string) error {
-	if UpdatedReply == "" {
-		return errors.New("there is nothing to update")
-	}
-	err := s.service.UpdateReply(postID, userID, UpdatedReply)
+func (s *RepliesService) UpdateReplyService(UpdatedReply models.Replies) error {
+
+	err := s.service.UpdateReply(UpdatedReply)
 	if err != nil {
 		return err
 	}
