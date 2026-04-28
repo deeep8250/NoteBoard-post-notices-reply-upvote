@@ -6,7 +6,7 @@ import (
 	"github.com/threadpulse/internal/middleware"
 )
 
-func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.ThreadHandler) {
+func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.ThreadHandler, RepliesHandler *handler.RepliesHandler) {
 
 	authHandler := r.Group("/auth")
 	{
@@ -20,11 +20,17 @@ func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.Thr
 		Protected.PATCH("/thread/:id", ThreadHandler.UpdateThreadHandler)
 		Protected.DELETE("/thread/:id", ThreadHandler.DeleteThreadHandler)
 
+		//replies
+		Protected.POST("/thread/:id/reply", RepliesHandler.CreateRepliesHandler)
+		Protected.PATCH("/thread/reply/:id", RepliesHandler.UpdateRepliesHandler)
+		Protected.DELETE("/thread/reply/:id", RepliesHandler.DeleteReplyHandler)
+
 	}
 	Public := r.Group("/public")
 	{
 		Public.GET("/threads", ThreadHandler.GetAllThreadHandler)
 		Public.GET("/thread/:id", ThreadHandler.GetThreadByIdHandler)
+		Public.GET("/thread/:id/replies", RepliesHandler.GetAllRepliesHandler)
 	}
 
 }
