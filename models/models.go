@@ -38,6 +38,6 @@ type Replies struct {
 	Id        int       `json:"id" db:"id"`
 	PostID    int       `json:"post_id" db:"post_id"`
 	UserID    int       `json:"user_id" db:"replied_user_id"`
-	Reply     int       `json:"reply" db:"reply"`
+	Reply     string    `json:"reply" db:"reply" binding:"required"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
