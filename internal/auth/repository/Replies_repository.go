@@ -31,14 +31,21 @@ func (r *RepliesRepo) CreateRepliesRepo(postID, userID int, reply string) error 
 	return nil
 }
 
-func (r *RepliesRepo) GetAllReplies(postID, limit, offset int) ([]models.Replies, error) {
+func (r *RepliesRepo) GetAllReplies(postID, limit, offset int) ([]models.Replies, int, error) {
 	var replies []models.Replies
 	query := `select * from replies where post_id=$1 limit $2 offset $3`
 	err := r.Db.Select(&replies, query, postID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return replies, nil
+	var count int
+	query = `select count(*) from replies where post_id=$1`
+	err = r.Db.Get(&count, query, postID)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return replies, count, nil
 }
 
 func (r *RepliesRepo) UpdateReply(replyID, userID int, UpdatedReply string) error {
