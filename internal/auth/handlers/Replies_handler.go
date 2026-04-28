@@ -110,8 +110,8 @@ func (h *RepliesHandler) GetAllRepliesHandler(c *gin.Context) {
 }
 
 func (h *RepliesHandler) UpdateRepliesHandler(c *gin.Context) {
-	postID := c.Param("id")
-	PostIdInt, err := strconv.Atoi(postID)
+	ReplyID := c.Param("id")
+	ReplyIdInt, err := strconv.Atoi(ReplyID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid url parameter",
@@ -136,7 +136,7 @@ func (h *RepliesHandler) UpdateRepliesHandler(c *gin.Context) {
 		return
 	}
 
-	replyUpdated.PostID = PostIdInt
+	replyUpdated.Id = ReplyIdInt
 	replyUpdated.UserID = userID.(int)
 
 	err = h.service.UpdateReplyService(replyUpdated)
@@ -147,7 +147,7 @@ func (h *RepliesHandler) UpdateRepliesHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"status": "reply updated",
 	})
 
