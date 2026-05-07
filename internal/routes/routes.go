@@ -8,13 +8,13 @@ import (
 
 func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.ThreadHandler, RepliesHandler *handler.RepliesHandler) {
 
-	authHandler := r.Group("/auth")
+	authHandler := r.Group("/auth", middleware.ErrorHandler())
 	{
 		authHandler.POST("/register", auth.RegisterHandler)
 		authHandler.POST("/login", auth.Login)
 	}
 
-	Protected := r.Group("/private", middleware.Miiddleware())
+	Protected := r.Group("/private", middleware.Miiddleware(), middleware.ErrorHandler())
 	{
 		Protected.POST("/thread", ThreadHandler.CreateThreadHandler)
 		Protected.PATCH("/thread/:id", ThreadHandler.UpdateThreadHandler)
@@ -26,7 +26,7 @@ func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.Thr
 		Protected.DELETE("/thread/reply/:id", RepliesHandler.DeleteReplyHandler)
 
 	}
-	Public := r.Group("/public")
+	Public := r.Group("/public", middleware.ErrorHandler())
 	{
 		Public.GET("/threads", ThreadHandler.GetAllThreadHandler)
 		Public.GET("/thread/:id", ThreadHandler.GetThreadByIdHandler)

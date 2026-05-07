@@ -20,17 +20,15 @@ func (h *AuthHandler) RegisterHandler(c *gin.Context) {
 	var UserRegisterInput models.Register
 	err := c.ShouldBind(&UserRegisterInput)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	err = h.services.Register(UserRegisterInput)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
@@ -44,17 +42,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&UserLoginInput)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	token, err := h.services.Login(UserLoginInput)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

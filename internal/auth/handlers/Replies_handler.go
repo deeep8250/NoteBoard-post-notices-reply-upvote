@@ -24,26 +24,23 @@ func (h *RepliesHandler) CreateRepliesHandler(c *gin.Context) {
 	postID := c.Param("id")
 	postIDint, err := strconv.Atoi(postID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid url parameter",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	var reply models.Replies
 	err = c.ShouldBindJSON(&reply)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	userID, ok := c.Get("userID")
 	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "unauthorized user",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
@@ -52,9 +49,8 @@ func (h *RepliesHandler) CreateRepliesHandler(c *gin.Context) {
 
 	err = h.service.CreateRepliesService(reply)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
@@ -69,9 +65,8 @@ func (h *RepliesHandler) GetAllRepliesHandler(c *gin.Context) {
 	PostId := c.Param("id")
 	PostIdInt, err := strconv.Atoi(PostId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid url parameter",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
@@ -79,25 +74,22 @@ func (h *RepliesHandler) GetAllRepliesHandler(c *gin.Context) {
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid query parameter",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 	page := c.DefaultQuery("page", "1")
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid query parameter",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	replies, count, err := h.service.GetAllRepliessService(PostIdInt, limitInt, pageInt)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
@@ -157,25 +149,22 @@ func (h *RepliesHandler) DeleteReplyHandler(c *gin.Context) {
 	replyID := c.Param("id")
 	replyIdInt, err := strconv.Atoi(replyID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid url parameter",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	userID, ok := c.Get("userID")
 	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "unauthorized user",
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
 	err = h.service.DeleteReplyService(replyIdInt, userID.(int))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		c.Error(err)
+		c.Abort()
 		return
 	}
 
