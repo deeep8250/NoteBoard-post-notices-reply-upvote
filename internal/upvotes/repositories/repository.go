@@ -31,3 +31,13 @@ func (r *UpvotesRepository) GetUpvotes(postId int) (int, error) {
 	}
 	return UpvotesCount, nil
 }
+
+func (r *UpvotesRepository) CheckUpvote(postID, userID int) (bool, error) {
+	var count int
+	query := `SELECT COUNT(*) FROM upvotes WHERE post_id=$1 AND user_id=$2`
+	err := r.db.Get(&count, query, postID, userID)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
