@@ -1,11 +1,11 @@
-package handler
+package handlers
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	service "github.com/threadpulse/internal/auth/services"
+	service "github.com/threadpulse/internal/replies/services"
 	"github.com/threadpulse/models"
 )
 

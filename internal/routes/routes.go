@@ -2,19 +2,22 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	handler "github.com/threadpulse/internal/auth/handlers"
+	auth "github.com/threadpulse/internal/auth/handlers"
 	"github.com/threadpulse/internal/middleware"
+	replies "github.com/threadpulse/internal/replies/handlers"
+	thread "github.com/threadpulse/internal/threads/handlers"
+	upvote "github.com/threadpulse/internal/upvotes/handlers"
 )
 
-func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.ThreadHandler, RepliesHandler *handler.RepliesHandler) {
+func Routes(r *gin.Engine, auth *auth.AuthHandler, ThreadHandler *thread.ThreadHandler, RepliesHandler *replies.RepliesHandler, upvote *upvote.UpvoteHandler) {
 
-	authHandler := r.Group("/auth", middleware.ErrorHandler())
+	authHandler := r.Group("/auth")
 	{
 		authHandler.POST("/register", auth.RegisterHandler)
 		authHandler.POST("/login", auth.Login)
 	}
 
-	Protected := r.Group("/private", middleware.Miiddleware(), middleware.ErrorHandler())
+	Protected := r.Group("/private", middleware.Miiddleware())
 	{
 		Protected.POST("/thread", ThreadHandler.CreateThreadHandler)
 		Protected.PATCH("/thread/:id", ThreadHandler.UpdateThreadHandler)
@@ -25,12 +28,16 @@ func Routes(r *gin.Engine, auth *handler.AuthHandler, ThreadHandler *handler.Thr
 		Protected.PATCH("/thread/reply/:id", RepliesHandler.UpdateRepliesHandler)
 		Protected.DELETE("/thread/reply/:id", RepliesHandler.DeleteReplyHandler)
 
+		//upvotes
+		Protected.POST("/thread/:id/upvote", upvote.Upvote)
+
 	}
-	Public := r.Group("/public", middleware.ErrorHandler())
+	Public := r.Group("/public")
 	{
 		Public.GET("/threads", ThreadHandler.GetAllThreadHandler)
 		Public.GET("/thread/:id", ThreadHandler.GetThreadByIdHandler)
 		Public.GET("/thread/:id/replies", RepliesHandler.GetAllRepliesHandler)
+		Public.GET("/thread/:id/upvotes", upvote.GetAllUpvotes)
 	}
 
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/threadpulse/internal/auth/repository"
+	"github.com/threadpulse/internal/threads/repository"
 	"github.com/threadpulse/models"
 )
 

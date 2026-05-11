@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	service "github.com/threadpulse/internal/auth/services"
+	service "github.com/threadpulse/internal/threads/services"
 	"github.com/threadpulse/models"
 )
 

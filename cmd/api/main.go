@@ -8,13 +8,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 
-	handler "github.com/threadpulse/internal/auth/handlers"
-	"github.com/threadpulse/internal/auth/repository"
-	service "github.com/threadpulse/internal/auth/services"
+	authhandler "github.com/threadpulse/internal/auth/handlers"
+	authrepo "github.com/threadpulse/internal/auth/repository"
+	authservice "github.com/threadpulse/internal/auth/services"
+	"github.com/threadpulse/internal/middleware"
+
+	threadhandler "github.com/threadpulse/internal/threads/handlers"
+	threadrepo "github.com/threadpulse/internal/threads/repository"
+	threadservice "github.com/threadpulse/internal/threads/services"
+
+	replieshandler "github.com/threadpulse/internal/replies/handlers"
+	repliesrepo "github.com/threadpulse/internal/replies/repository"
+	repliesservice "github.com/threadpulse/internal/replies/services"
+
+	upvotehandler "github.com/threadpulse/internal/upvotes/handlers"
+	upvoterepo "github.com/threadpulse/internal/upvotes/repositories"
+	upvoteservice "github.com/threadpulse/internal/upvotes/services"
 
 	"github.com/threadpulse/internal/routes"
 )
@@ -55,22 +66,30 @@ func main() {
 
 	fmt.Println("database connect successfully")
 
-	AuthRepo := repository.NewAuthRepo(db)
-	AuthService := service.NewAuthService(AuthRepo)
-	AuthHandler := handler.NewAuthHandler(AuthService)
+	AuthRepo := authrepo.NewAuthRepo(db)
+	AuthService := authservice.NewAuthService(AuthRepo)
+	AuthHandler := authhandler.NewAuthHandler(AuthService)
 
 	//threads
-	ThreadRepo := repository.NewThreadRepo(db)
-	ThreadService := service.NewThreadsService(ThreadRepo)
-	ThreadHandler := handler.NewThreadHandler(ThreadService)
+	ThreadRepo := threadrepo.NewThreadRepo(db)
+	ThreadService := threadservice.NewThreadsService(ThreadRepo)
+	ThreadHandler := threadhandler.NewThreadHandler(ThreadService)
 
 	// replies
-	RepliesRepo := repository.NewRepliesRepo(db)
-	repliesService := service.NewRepliesService(RepliesRepo)
-	repliesHandler := handler.NewRepliesHandler(repliesService)
+	RepliesRepo := repliesrepo.NewRepliesRepo(db)
+	repliesService := repliesservice.NewRepliesService(RepliesRepo)
+	repliesHandler := replieshandler.NewRepliesHandler(repliesService)
+
+	// upvotes
+	UpvoteRepo := upvoterepo.NewUpvotesRepository(db)
+	UpvoteWorker := upvoterepo.NewUpvoteWorker(UpvoteRepo)
+	UpvoteWorker.Start()
+	UpvoteService := upvoteservice.NewUpvoteService(UpvoteRepo, UpvoteWorker)
+	UpvoteHandler := upvotehandler.NewUpvoteHandler(UpvoteService)
 
 	r := gin.Default()
-	routes.Routes(r, AuthHandler, ThreadHandler, repliesHandler)
+	r.Use(middleware.ErrorHandler())
+	routes.Routes(r, AuthHandler, ThreadHandler, repliesHandler, UpvoteHandler)
 
 	r.Run(":8080")
 
