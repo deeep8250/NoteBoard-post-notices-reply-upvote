@@ -35,8 +35,12 @@ func (h *UpvoteHandler) Upvote(c *gin.Context) {
 		return
 	}
 
-	h.service.SubmitUpvote(postID, userID.(int))
-
+	err = h.service.SubmitUpvote(postID, userID.(int))
+	if err != nil {
+		c.Error(err)
+		c.Abort()
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status": "upvoted",
 	})

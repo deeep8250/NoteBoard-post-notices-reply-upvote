@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/threadpulse/internal/upvotes/repositories"
 )
 
@@ -16,8 +18,16 @@ func NewUpvoteService(Repo *repositories.UpvotesRepository, Worker *repositories
 	}
 }
 
-func (s *UpvoteService) SubmitUpvote(postID, userID int) {
+func (s *UpvoteService) SubmitUpvote(postID, userID int) error {
+	exists, err := s.repo.CheckUpvote(postID, userID)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("already upvoted")
+	}
 	s.worker.Submit(postID, userID)
+	return nil
 
 }
 
