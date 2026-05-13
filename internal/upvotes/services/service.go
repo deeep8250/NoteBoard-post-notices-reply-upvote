@@ -27,6 +27,7 @@ func (s *UpvoteService) SubmitUpvote(postID, userID int) error {
 		return errors.New("already upvoted")
 	}
 	s.worker.Submit(postID, userID)
+
 	return nil
 
 }
