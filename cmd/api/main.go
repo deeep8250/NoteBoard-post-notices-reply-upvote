@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -16,7 +17,9 @@ import (
 	authhandler "github.com/threadpulse/internal/auth/handlers"
 	authrepo "github.com/threadpulse/internal/auth/repository"
 	authservice "github.com/threadpulse/internal/auth/services"
+	"github.com/threadpulse/internal/db/redis"
 	"github.com/threadpulse/internal/middleware"
+	"github.com/threadpulse/internal/routes"
 
 	threadhandler "github.com/threadpulse/internal/threads/handlers"
 	threadrepo "github.com/threadpulse/internal/threads/repository"
@@ -30,7 +33,7 @@ import (
 	upvoterepo "github.com/threadpulse/internal/upvotes/repositories"
 	upvoteservice "github.com/threadpulse/internal/upvotes/services"
 
-	"github.com/threadpulse/internal/routes"
+	_ "github.com/threadpulse/internal/routes"
 )
 
 func main() {
@@ -68,6 +71,20 @@ func main() {
 	}
 
 	fmt.Println("database connect successfully")
+
+	// pinging redis
+	redisClient := redis.NewRedisClient()
+	ctx := context.Background()
+	_, err = redisClient.Ping(ctx).Result()
+	if err != nil {
+		log.Fatal("redis connection failed: ", err.Error())
+	}
+
+	log.Println("Redis connected successfully")
+
+	//
+
+	// dependency injections
 
 	AuthRepo := authrepo.NewAuthRepo(db)
 	AuthService := authservice.NewAuthService(AuthRepo)
