@@ -93,3 +93,13 @@ func (r *ThreadsRepo) DeleteThread(ThreadID, UserID int) error {
 	}
 	return nil
 }
+
+func (r *ThreadsRepo) GetHotThread(limit int) ([]models.HotThread, error) {
+	var hotThreads []models.HotThread
+	sql := `select posts.*,count(u.id) as upvote_count from posts left join upvotes as u on u.post_id=posts.id group by posts.id order by upvote_count desc limit $1`
+	err := r.Db.Select(&hotThreads, sql, limit)
+	if err != nil {
+		return nil, err
+	}
+	return hotThreads, nil
+}
