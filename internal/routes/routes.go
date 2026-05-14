@@ -38,6 +38,7 @@ func Routes(r *gin.Engine, auth *auth.AuthHandler, ThreadHandler *thread.ThreadH
 		Public.GET("/thread/:id", ThreadHandler.GetThreadByIdHandler)
 		Public.GET("/thread/:id/replies", RepliesHandler.GetAllRepliesHandler)
 		Public.GET("/thread/:id/upvotes", upvote.GetAllUpvotes)
+		Public.GET("/thread/hot", ThreadHandler.GetHotThreads)
 	}
 
 }
