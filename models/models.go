@@ -41,3 +41,12 @@ type Replies struct {
 	Reply     string    `json:"reply" db:"reply" binding:"required"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
+
+type HotThread struct {
+	Id          int       `json:"id" db:"id"`
+	UserID      int       `json:"user_id" db:"user_id"`
+	Title       string    `json:"title" db:"title"`
+	Content     string    `json:"content" db:"content"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	UpvoteCount int       `json:"upvote_count" db:"upvote_count"`
+}
