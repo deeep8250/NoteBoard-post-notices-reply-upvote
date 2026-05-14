@@ -1,17 +1,24 @@
 package service
 
 import (
+	"encoding/json"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 	"github.com/threadpulse/internal/threads/repository"
 	"github.com/threadpulse/models"
+	"golang.org/x/net/context"
 )
 
 type ThreadsService struct {
-	repo *repository.ThreadsRepo
+	repo        *repository.ThreadsRepo
+	redisClient *redis.Client
 }
 
-func NewThreadsService(repo *repository.ThreadsRepo) *ThreadsService {
+func NewThreadsService(repo *repository.ThreadsRepo, redisC *redis.Client) *ThreadsService {
 	return &ThreadsService{
-		repo: repo,
+		repo:        repo,
+		redisClient: redisC,
 	}
 
 }
@@ -60,4 +67,31 @@ func (s *ThreadsService) DeleteThread(ThreadID, UserID int) error {
 		return err
 	}
 	return nil
+}
+
+func (s *ThreadsService) GetHotThreadsService(c context.Context, limit int) ([]models.HotThread, error) {
+
+	val, err := s.redisClient.Get(c, "hot_threads").Result()
+	if err == redis.Nil {
+		hotThreads, err := s.repo.GetHotThread(limit)
+		if err != nil {
+			return nil, err
+		}
+
+		data, err := json.Marshal(hotThreads)
+		if err != nil {
+			return nil, err
+		}
+
+		s.redisClient.Set(c, "hot_threads", data, 5*time.Minute)
+		return hotThreads, nil
+
+	} else if err != nil {
+		return nil, err
+	} else {
+		var hotThreads []models.HotThread
+		json.Unmarshal([]byte(val), &hotThreads)
+		return hotThreads, nil
+	}
+
 }

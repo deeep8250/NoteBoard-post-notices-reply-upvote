@@ -167,3 +167,27 @@ func (h *ThreadHandler) DeleteThreadHandler(c *gin.Context) {
 	})
 
 }
+
+func (h *ThreadHandler) GetHotThreads(c *gin.Context) {
+	limit := c.DefaultQuery("limit", "2")
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		c.Error(err)
+		c.Abort()
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	hotThreads, err := h.services.GetHotThreadsService(ctx, limitInt)
+	if err != nil {
+		c.Error(err)
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"hot threads": hotThreads,
+	})
+
+}
