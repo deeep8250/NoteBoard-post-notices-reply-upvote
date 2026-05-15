@@ -106,12 +106,12 @@ func main() {
 	UpvoteRepo := upvoterepo.NewUpvotesRepository(db)
 	UpvoteWorker := upvoterepo.NewUpvoteWorker(UpvoteRepo)
 	UpvoteWorker.Start()
-	UpvoteService := upvoteservice.NewUpvoteService(UpvoteRepo, UpvoteWorker)
+	UpvoteService := upvoteservice.NewUpvoteService(UpvoteRepo, UpvoteWorker, redisClient)
 	UpvoteHandler := upvotehandler.NewUpvoteHandler(UpvoteService)
 
 	r := gin.Default()
 	r.Use(middleware.ErrorHandler())
-	routes.Routes(r, AuthHandler, ThreadHandler, repliesHandler, UpvoteHandler)
+	routes.Routes(r, AuthHandler, ThreadHandler, repliesHandler, UpvoteHandler, redisClient)
 
 	r.Run(":8080")
 

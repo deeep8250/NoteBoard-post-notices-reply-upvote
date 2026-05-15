@@ -35,7 +35,7 @@ func (h *UpvoteHandler) Upvote(c *gin.Context) {
 		return
 	}
 
-	err = h.service.SubmitUpvote(postID, userID.(int))
+	err = h.service.SubmitUpvote(postID, userID.(int), c.Request.Context())
 	if err != nil {
 		c.Error(err)
 		c.Abort()

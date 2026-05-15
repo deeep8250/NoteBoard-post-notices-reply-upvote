@@ -1,6 +1,10 @@
 package repositories
 
-import "github.com/jmoiron/sqlx"
+import (
+	"errors"
+
+	"github.com/jmoiron/sqlx"
+)
 
 type UpvotesRepository struct {
 	db *sqlx.DB
@@ -33,9 +37,18 @@ func (r *UpvotesRepository) GetUpvotes(postId int) (int, error) {
 }
 
 func (r *UpvotesRepository) CheckUpvote(postID, userID int) (bool, error) {
+	var checkPostsExists int
+	query1 := `select count(*) from posts where id=$1`
+	err := r.db.Get(&checkPostsExists, query1, postID)
+	if err != nil {
+		return false, err
+	} else if checkPostsExists == 0 {
+		return false, errors.New("post id invalid")
+	}
+
 	var count int
 	query := `SELECT COUNT(*) FROM upvotes WHERE post_id=$1 AND user_id=$2`
-	err := r.db.Get(&count, query, postID, userID)
+	err = r.db.Get(&count, query, postID, userID)
 	if err != nil {
 		return false, err
 	}

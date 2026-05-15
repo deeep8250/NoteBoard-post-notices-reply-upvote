@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	auth "github.com/threadpulse/internal/auth/handlers"
 	"github.com/threadpulse/internal/middleware"
 	replies "github.com/threadpulse/internal/replies/handlers"
@@ -9,7 +12,7 @@ import (
 	upvote "github.com/threadpulse/internal/upvotes/handlers"
 )
 
-func Routes(r *gin.Engine, auth *auth.AuthHandler, ThreadHandler *thread.ThreadHandler, RepliesHandler *replies.RepliesHandler, upvote *upvote.UpvoteHandler) {
+func Routes(r *gin.Engine, auth *auth.AuthHandler, ThreadHandler *thread.ThreadHandler, RepliesHandler *replies.RepliesHandler, upvote *upvote.UpvoteHandler, redisClient *redis.Client) {
 
 	authHandler := r.Group("/auth")
 	{
@@ -19,8 +22,8 @@ func Routes(r *gin.Engine, auth *auth.AuthHandler, ThreadHandler *thread.ThreadH
 
 	Protected := r.Group("/private", middleware.Miiddleware())
 	{
-		Protected.POST("/thread", ThreadHandler.CreateThreadHandler)
-		Protected.PATCH("/thread/:id", ThreadHandler.UpdateThreadHandler)
+		Protected.POST("/thread", middleware.RateLimiter(redisClient, 5, time.Minute), ThreadHandler.CreateThreadHandler)
+		Protected.PATCH("/thread/:id", middleware.RateLimiter(redisClient, 5, time.Minute), ThreadHandler.UpdateThreadHandler)
 		Protected.DELETE("/thread/:id", ThreadHandler.DeleteThreadHandler)
 
 		//replies
